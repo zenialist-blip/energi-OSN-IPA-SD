@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="id"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Energi dan Perubahannya: Coba Sendiri</title>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#eef5f3;--grid:#d3e3df;--card:#fff;--ink:#1d2b4a;--mut:#56627c;--line:#1d2b4a;--blue:#2f6fd0;--red:#d94a3d;--grn:#2e9b6a;--yel:#f2b632;--soft:#e6eefb;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#121a2b;--grid:#1d2842;--card:#1a2339;--ink:#e8eefc;--mut:#9fb0d0;--line:#e8eefc;--blue:#6aa3ff;--red:#ff7d6e;--grn:#52d29b;--yel:#ffcf5c;--soft:#243050}}
+:root[data-theme=dark]{--bg:#121a2b;--grid:#1d2842;--card:#1a2339;--ink:#e8eefc;--mut:#9fb0d0;--line:#e8eefc;--blue:#6aa3ff;--red:#ff7d6e;--grn:#52d29b;--yel:#ffcf5c;--soft:#243050}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:24px 24px;color:var(--ink);font:400 16px/1.55 Lexend,system-ui,sans-serif}
+main{max-width:640px;margin:0 auto;padding:20px 14px 96px}
+h1{font-size:1.7rem;margin:8px 0 4px;line-height:1.2}.sub{color:var(--mut);margin:0 0 16px}
+nav{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:22px}
+nav a{background:var(--card);border:2px solid var(--line);border-radius:20px;padding:2px 12px;color:var(--ink);font-weight:600;font-size:.9rem;cursor:pointer}
+nav a.on{background:var(--yel);color:#1d2b4a}
+section{display:none;background:var(--card);border:2px solid var(--line);border-radius:6px 18px 6px 18px;padding:16px;box-shadow:4px 4px 0 var(--line)}
+section.on{display:block}
+h2{font-size:1.15rem;margin:0 0 2px}.tag{color:var(--mut);font-size:.8rem;margin:0 0 8px}
+.k{background:var(--soft);border-left:5px solid var(--blue);padding:8px 10px;margin:8px 0;border-radius:0 8px 8px 0}
+.q{border:2px dashed var(--mut);border-radius:10px;padding:8px 10px;margin:8px 0;font-size:.92rem}.q b{display:block;margin-bottom:2px}
+svg{width:100%;height:auto;display:block;background:var(--soft);border-radius:10px}
+svg text{font-family:Lexend,sans-serif;fill:var(--ink);font-size:11px}
+label{display:block;font-weight:600;margin:10px 0 2px}
+input[type=range]{width:100%;accent-color:var(--blue);height:32px}
+.out{font-weight:600;background:var(--soft);border-radius:8px;padding:8px 10px;margin-top:6px}
+.row{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+button{font:600 .9rem Lexend,sans-serif;background:var(--card);color:var(--ink);border:2px solid var(--line);border-radius:10px;padding:6px 12px;cursor:pointer;min-height:40px}
+button.on{background:var(--yel);color:#1d2b4a}
+details{margin-top:10px}summary{cursor:pointer;font-weight:600;color:var(--blue)}details p{margin:6px 0 0}
+.good{color:var(--grn)}.bad{color:var(--red)}
+.ln{stroke:var(--line);stroke-width:2;fill:none}
+.fm{background:var(--soft);border-left:5px solid var(--grn);border-radius:0 8px 8px 0;padding:6px 10px;margin:6px 0;font:600 .95rem/1.5 ui-monospace,Menlo,Consolas,monospace;white-space:pre-wrap}
+.pg{position:fixed;left:0;right:0;bottom:0;z-index:5;background:var(--bg);border-top:2px solid var(--line);padding:8px 14px calc(8px + env(safe-area-inset-bottom,0px))}
+.pg div{max-width:640px;margin:auto;display:flex;gap:8px;align-items:center}.pg button{flex:1}.pg span{flex:0 0 auto;font-weight:600;color:var(--mut);font-size:.85rem}.pg button:disabled{opacity:.35}
+:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+</style></head><body><main>
+<h1>Energi dan Perubahannya: Coba Sendiri</h1>
+<p class="sub">g = 10 m/s², gesekan diabaikan.</p>
+<nav id="nv"></nav><div id="ms"></div></main>
+<div class="pg"><div><button id="pv">Sebelumnya</button><span id="pc"></span><button id="nx">Berikutnya</button></div></div>
+<script>
+const $=i=>document.getElementById(i),N=x=>String(+x.toFixed(2)).replace('.',','),PI=Math.PI;
+function bind(id,f){const r=$(id+'r');r.oninput=()=>{$(id+'v').textContent=N(+r.value);f(+r.value)};r.oninput()}
+const set=(id,v)=>{const r=$(id+'r');r.value=v;r.oninput()};
+const C=(id,l,mn,mx,st,v)=>`<label>${l}: <span id="${id}v"></span></label><input id="${id}r" type="range" min="${mn}" max="${mx}" step="${st}" value="${v}">`;
+const O=id=>`<div class="out" id="${id}"></div>`;
+const G=(n,h)=>`<svg viewBox="0 0 320 ${h}"><g id="a${n}"></g></svg>`;
+const F=x=>Math.round(x).toLocaleString('id-ID');
+const BT=(id,t)=>`<button id="${id}">${t}</button>`;
+const R=(x,y,w,h,f)=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${f}" stroke="var(--line)" stroke-width="2"/>`;
+const tx=(x,y,s,a,st)=>`<text x="${x}" y="${y}"${a?` text-anchor="${a}"`:''}${st?` style="${st}"`:''}>${s}</text>`;
+const BALL=(x,y,r)=>`<circle cx="${x}" cy="${y}" r="${r||8}" fill="var(--red)" stroke="var(--line)" stroke-width="2"/>`;
+const AR=(x1,y1,x2,y2,w,c)=>{const l=Math.hypot(x2-x1,y2-y1),a=Math.atan2(y2-y1,x2-x1),q=w*1.6+6;if(l<q+2)return '';const hx=x2-Math.cos(a)*q,hy=y2-Math.sin(a)*q,px=-Math.sin(a)*(w*.9+4),py=Math.cos(a)*(w*.9+4);return `<path d="M${x1} ${y1}L${hx} ${hy}" stroke="${c}" stroke-width="${w}" fill="none"/><polygon points="${x2},${y2} ${hx+px},${hy+py} ${hx-px},${hy-py}" fill="${c}"/>`};
+const play=(b,k,mx,st)=>{let tm;$(b).onclick=()=>{clearInterval(tm);set(k,0);tm=setInterval(()=>{const n=+$(k+'r').value+st;if(n>=mx){set(k,mx);clearInterval(tm)}else set(k,n)},40)};$(k+'r').addEventListener('pointerdown',()=>clearInterval(tm))};
+const flow=(tot,out,mx,lb)=>{const w=v=>Math.max(1,v/mx*300);return tx(8,14,'Energi masuk (Ei)')+R(8,20,w(tot),22,'var(--yel)')+tx(8,66,lb)+R(8,72,w(out),22,'var(--grn)')+R(8+w(out),72,w(tot-out),22,'var(--red)')+tx(8,112,'hijau = dipakai, merah = terbuang jadi panas')};
+const S=[
+{n:1,t:`Bola di titik tertinggi`,tag:`OSN Final 2025 PJ no. 38`,
+k:`Naik: Ek turun, Ep naik. Jatuh: sebaliknya. Di puncak bola diam sesaat, jadi Ek = 0 dan Ep paling besar.`,
+q:`Seorang anak melempar bola ke atas. Bola bergerak naik, berhenti sejenak di puncak, lalu jatuh kembali. Pada titik manakah energi kinetik bola paling kecil dan energi potensialnya paling besar? A. Saat bola berada di tengah perjalanan naik. B. Saat bola kembali ke tangan anak. C. Saat bola mencapai titik tertinggi. D. Saat bola dilempar dari tangan anak.`,
+c:G(1,150)+C('p1','Ketinggian bola (m)',0,5,.25,2.5)+`<div class="row">${BT('p1a','Di tangan')}${BT('p1b','Tengah jalan')}${BT('p1d','Arah: naik')}${BT('p1c','Puncak')}</div>`+O('p1o'),
+a:`<b>C</b>. Di tengah jalan bola masih bergerak (A). Di tangan, tingginya paling kecil sehingga Ep paling kecil dan Ek paling besar (B dan D).`,
+r:`Ek = ½mv² → paling kecil saat v = 0\nEp = mgh → paling besar saat h paling besar\nKeduanya terjadi di puncak.\nAngka di gambar (1 kg, v awal 10 m/s) hanya contoh.`},
+{n:2,t:`Ek awal sama dengan Ep di puncak`,tag:`OSN Final 2025 PJ no. 43`,
+k:`Tanpa gesekan, energi total tidak berubah. Saat dilempar semuanya Ek, di puncak semuanya Ep. Jadi Ek awal = Ep puncak.`,
+q:`Sebuah benda bermassa 2 kg dilempar vertikal ke atas dengan kecepatan awal v0 dan mencapai ketinggian maksimum h. Bagaimana hubungan antara energi kinetik awal dan energi potensial di ketinggian maksimum? A. Ek awal lebih besar dari Ep maksimum. B. Tidak ada hubungan. C. Ek awal lebih kecil dari Ep maksimum. D. Ek awal sama dengan Ep maksimum.`,
+c:G(2,140)+C('p2','Kecepatan awal v0 (m/s)',1,20,1,10)+C('p2b','Massa (kg)',1,10,1,2)+C('p2t','Posisi bola (0 = baru dilempar, 100 = puncak) %',0,100,5,50)+`<div class="row">${BT('p2g','Lempar')}${BT('p2s','Sesuai soal (m = 2 kg)')}</div>`+O('p2o'),
+a:`<b>D</b>. Kalau Ek awal lebih besar atau lebih kecil (A, C), berarti ada energi yang hilang atau muncul. B salah karena keduanya jelas berhubungan.`,
+r:`½mv0² = mgh\nh = v0² ÷ 2g\nContoh m = 2 kg, v0 = 10 m/s: Ek = 100 J, h = 5 m, Ep = 2 × 10 × 5 = 100 J.`},
+{n:5,t:`Makna efisiensi panel surya`,tag:`OSN Kabupaten 2025 PJ no. 52`,
+k:`Efisiensi = bagian energi masuk yang jadi energi yang kita mau. Panel surya: masuk = cahaya matahari, yang kita mau = listrik. Sisanya jadi panas.`,
+q:`Pada panel surya terdapat efisiensi yang dinyatakan dalam persentase (%). Makna dari persentase tersebut adalah … A. Rasio sel surya yang digunakan terhadap daya listrik yang dihasilkan B. Rasio energi listrik yang dihasilkan terhadap energi matahari yang diterima C. Rasio energi listrik yang diterima terhadap energi matahari yang dihasilkan D. Rasio energi matahari yang diterima terhadap energi listrik yang dihasilkan`,
+c:G(5,130)+C('p5','Efisiensi panel (%)',5,40,1,20)+O('p5o'),
+a:`<b>B</b>: listrik yang dihasilkan dibanding matahari yang diterima. C dan D terbalik. A membandingkan hal yang tidak sejenis (jumlah sel dengan daya).`,
+r:`Efisiensi = listrik yang dihasilkan ÷ energi matahari yang diterima × 100%\nContoh 20%: dari 100 bagian cahaya, 20 jadi listrik, 80 jadi panas.`},
+{n:9,t:`Ayunan bandul`,tag:`OSN SD/MI 2024 Tes Teori 1 no. 41`,
+k:`Di ujung ayunan bandul paling tinggi dan diam sesaat: Ep terbesar, Ek = 0. Di titik terendah bandul paling cepat: Ep terkecil, Ek terbesar.`,
+q:`Dalam peristiwa ayunan bandul, hubungan antara nilai energi kinetik dan energi potensial ayunan adalah A. Ek selalu sama besar dengan Ep B. Ek selalu lebih kecil dari Ep C. Ek selalu lebih besar dari Ep D. Ek bernilai maksimum saat Ep minimum`,
+c:G(9,140)+C('p9','Sudut ayunan (°)',-40,40,2,40)+`<div class="row">${BT('p9a','Ujung kiri')}${BT('p9b','Titik terendah')}${BT('p9c','Ujung kanan')}</div>`+O('p9o'),
+a:`<b>D</b>. A, B, C memakai kata "selalu", padahal besar Ek dan Ep terus bergantian.`,
+r:`Titik terendah: h terkecil → Ep terkecil\nEk + Ep tetap → Ek terbesar\nGambar memakai total energi 100 satuan sebagai contoh.`},
+{n:12,t:`Empat pompa air`,tag:`OSN SD/MI 2023 Set A no. 40`,
+k:`Mengangkat air setinggi h butuh energi mgh. Waktu = energi ÷ daya, jadi t = mgh ÷ P. Massa air sama, jadi cukup bandingkan h ÷ P. Makin kecil, makin cepat.`,
+q:`Empat pompa air elektrik: i. 125 watt, kedalaman 15 m; ii. 200 watt, 20 m; iii. 300 watt, 25 m; iv. 375 watt, 30 m. Dinyalakan bersamaan untuk mengisi bak 350 liter. Urutan paling cepat penuh sampai paling lambat adalah … A. i – ii – iii – iv B. iv – iii – ii – i C. ii – iii – iv – i D. iv – ii – i – iii`,
+c:G(12,182)+C('p12','Waktu sejak pompa dinyalakan (detik)',0,450,5,0)+`<div class="row">${BT('p12s','Mulai lomba')}${BT('p12z','Ulangi')}</div>`+O('p12o'),
+a:`<b>B</b> (iv – iii – ii – i). h ÷ P: i = 0,120; ii = 0,100; iii = 0,083; iv = 0,080. Di simulasi, iv penuh di 280 detik, i baru penuh di 420 detik.`,
+r:`t = mgh ÷ P\nm dan g sama → bandingkan h ÷ P\ni: 15÷125 = 0,120 | ii: 20÷200 = 0,100\niii: 25÷300 = 0,083 | iv: 30÷375 = 0,080\nTerkecil paling cepat: iv, iii, ii, i.\nAsumsi: pompa tanpa kehilangan energi, 1 liter air = 1 kg.`},
+{n:13,t:`Mengapa disebut terbarukan`,tag:`OSN SD/MI 2023 Set A no. 41`,
+k:`Terbarukan = alam menyediakannya lagi dalam waktu singkat, jadi tidak habis. Bukan soal bersih, murah, atau cepat.`,
+q:`Cahaya matahari, angin dan tenaga air merupakan sumber energi terbarukan karena … A. Dapat menghasilkan panas dan listrik dengan cepat B. Dapat diganti ulang oleh alam dalam waktu singkat C. Tidak menghasilkan polusi D. Tidak membutuhkan biaya besar dalam pembuatannya`,
+c:G(13,120)+`<div class="row">${['1 bulan','1 tahun','80 tahun','1 juta tahun'].map((x,i)=>BT('p13'+i,x)).join('')}</div>`+O('p13o'),
+a:`<b>B</b>. A (cepat menghasilkan listrik) juga berlaku untuk batu bara. C (tanpa polusi) bukan syarat: nuklir rendah emisi tapi bukan terbarukan. D soal biaya, bukan definisi.`,
+r:`Terbarukan = bisa diperbarui.\nCari pilihan tentang alam yang mengganti sumbernya.\nCoret pilihan tentang kecepatan, polusi, biaya.\nWaktu isi ulang di gambar hanya perkiraan kasar (fosil: jutaan tahun).`},
+{n:15,t:`Rumus efisiensi`,tag:`OSN SD/MI 2023 Set B no. 51`,
+k:`Efisiensi = energi yang dipakai alat (Eo) ÷ energi dari sumber (Ei) × 100%. Eo tidak mungkin lebih besar dari Ei, jadi efisiensi tidak pernah lebih dari 100%.`,
+q:`Efisiensi penggunaan energi adalah perbandingan energi yang digunakan alat listrik (Eo) dengan energi yang diberikan sumber listrik (Ei). Besar efisiensi dinyatakan dengan persamaan … (pilihan A sampai D berupa rumus pecahan, teksnya rusak di PDF; kunci: C, Eo ÷ Ei × 100%)`,
+c:G(15,125)+C('p15','Energi masuk Ei (J)',50,200,10,100)+C('p15b','Energi dipakai Eo (J)',5,200,5,20)+O('p15o'),
+a:`<b>C</b>. Cek cepat: rumus yang benar tidak pernah lebih dari 100%. Kalau dibalik (Ei ÷ Eo) bisa jadi ratusan persen, coba geser slider.`,
+r:`η = Eo ÷ Ei × 100%\nContoh: Eo = 20 J, Ei = 100 J → 20%\nCatatan: rumus pilihan A, B, D tidak terbaca di PDF.`},
+{n:16,t:`Perubahan energi di PLTA`,tag:`OSN SD/MI 2023 Isian Gambar no. 19`,
+k:`Air di atas punya energi potensial. Saat jatuh jadi energi kinetik, memutar turbin, turbin memutar generator, keluar listrik.`,
+q:`Konversi energi adalah proses …(A)… dari satu bentuk ke bentuk lainnya. Proses konversi energi pada pembangkit listrik tenaga air melibatkan perubahan …(B)… menjadi energi kinetik yang kemudian digunakan untuk menggerakkan …(C)… dan menghasilkan …(D)…`,
+c:G(16,152)+C('p16','Tahap',1,4,1,1)+O('p16o'),
+a:`(A) <b>perubahan bentuk atau perpindahan</b>, (B) <b>energi potensial</b>, (C) <b>turbin</b>, (D) <b>listrik</b>.`,
+r:`Air di bendungan (Ep) → air jatuh (Ek) → turbin berputar → generator → listrik`},
+{n:20,t:`Menebak planet dari tinggi lemparan`,tag:`OSN SD/MI 2021 Set 1 no. 50`,
+k:`Dilempar naik dengan kecepatan yang sama, makin kecil gravitasi g, makin tinggi naiknya: h = v² ÷ 2g. Massa tidak berpengaruh.`,
+q:`Benda 1 kg dilempar vertikal ke atas dengan kecepatan awal 10 m/s di tiga lokasi berbeda. Tinggi maksimum: Lokasi X 5,1 m; Lokasi Y 31,3 m; Lokasi Z 1,9 m. Jika gravitasi ketiga lokasi berbeda, maka lokasi X, Y, dan Z adalah … A. Bumi, Jupiter, Bulan B. Bumi, Bulan, Jupiter C. Bulan, Bumi, Jupiter D. Jupiter, Bumi, Bulan`,
+c:G(20,135)+C('p20','Gravitasi g (m/s²)',1.5,30,.1,9.8)+`<div class="row">${BT('p20a','Bulan (1,6)')}${BT('p20b','Bumi (9,8)')}${BT('p20c','Jupiter (24,8)')}</div>`+O('p20o'),
+a:`<b>B</b> (Bumi, Bulan, Jupiter). g = v² ÷ 2h: X ≈ 9,8 (Bumi), Y ≈ 1,6 (Bulan), Z ≈ 26 (paling dekat Jupiter, sekitar 24,8; angka soal dibulatkan). Cara cepat: tertinggi = gravitasi terkecil = Bulan, terendah = gravitasi terbesar = Jupiter.`,
+r:`g = v² ÷ 2h\nX: 100 ÷ (2×5,1) ≈ 9,8\nY: 100 ÷ (2×31,3) ≈ 1,6\nZ: 100 ÷ (2×1,9) ≈ 26\nPembanding: Bumi 9,8; Bulan 1,6; Jupiter ±24,8 m/s².`},
+{n:21,t:`Kecepatan batu di dasar bukit`,tag:`OSN SD/MI 2021 Set 2 no. 47`,
+k:`Ep di atas (mgh) berubah semua jadi Ek di bawah (½mv²). Massa m saling coret, jadi v = √(2gh). Kecepatan tidak bergantung massa.`,
+q:`Sebuah batu menggelinding dari atas bukit setinggi 5 m tanpa kecepatan awal. Jika massa batu 4 kg, berapakah kecepatan batu saat mencapai dasar bukit? A. 10 m/s B. 15 m/s C. 20 m/s D. 25 m/s`,
+c:G(21,135)+C('p21','Tinggi bukit (m)',1,20,1,5)+C('p21b','Massa batu (kg)',1,10,1,4)+C('p21t','Posisi batu di lereng (%)',0,100,5,0)+`<div class="row">${BT('p21g','Luncurkan')}${BT('p21s','Sesuai soal (5 m, 4 kg)')}</div>`+O('p21o'),
+a:`<b>A</b> (10 m/s). v = √(2 × 10 × 5) = √100 = 10. Massa 4 kg hanya pengecoh: geser slider massa, v tidak berubah.`,
+r:`mgh = ½mv²\nv² = 2gh = 2 × 10 × 5 = 100\nv = 10 m/s`}
+];
+const nv=$('nv'),ms=$('ms');
+S.forEach(s=>{nv.insertAdjacentHTML('beforeend',`<a data-n="${s.n}">${s.n}</a>`);
+ms.insertAdjacentHTML('beforeend',`<section id="s${s.n}" data-n="${s.n}"><h2>Soal ${s.n}: ${s.t}</h2><p class="tag">${s.tag}</p><div class="k">${s.k}</div><div class="q"><b>Soal</b>${s.q}</div>${s.c}<details><summary>Lihat jawaban</summary><p>${s.a}</p></details><details><summary>Langkah mengerjakan</summary><div class="fm">${s.r}</div></details></section>`)});
+/* 1 */
+{let up=1;const u=h=>{const v=Math.sqrt(100-20*h),ek=v*v/2,ep=10*h,y=127-h*22;
+$('a1').innerHTML=`<path d="M10 135H130" class="ln"/><path d="M70 135V17" stroke="var(--mut)" stroke-dasharray="3 3"/>${tx(78,21,'puncak 5 m','start','font-size:9px')}${BALL(70,y)}${AR(90,y,90,y-up*v*2.2,3,'var(--red)')}${tx(98,y+4,'v = '+N(v)+' m/s','start','font-size:9px')}${R(170,135-ep*1.8,40,ep*1.8,'var(--yel)')}${R(240,135-ek*1.8,40,ek*1.8,'var(--blue)')}${tx(190,148,'Ep','middle')}${tx(260,148,'Ek','middle')}${tx(190,129-ep*1.8,N(ep)+' J','middle')}${tx(260,129-ek*1.8,N(ek)+' J','middle')}`;
+$('p1o').innerHTML=`Ep = mgh = 1 × 10 × ${N(h)} = <b>${N(ep)} J</b><br>v² = 10² − 2 × 10 × ${N(h)}, v = ${N(v)} m/s, Ek = ½mv² = <b>${N(ek)} J</b><br>Ek + Ep = ${N(ek+ep)} J (selalu sama)<br>${h==5?'<b>Puncak: v = 0, Ek = 0, Ep paling besar.</b>':h==0?'Di tangan: Ep = 0, Ek paling besar.':'Bola sedang '+(up>0?'naik':'turun')+', panah merah = arah gerak.'}`};
+bind('p1',u);$('p1a').onclick=()=>set('p1',0);$('p1b').onclick=()=>set('p1',2.5);
+$('p1d').onclick=()=>{up=-up;$('p1d').textContent=up>0?'Arah: naik':'Arah: turun';u(+$('p1r').value)}}
+/* 2 */
+{const u=()=>{const v0=+$('p2r').value,m=+$('p2br').value,q=+$('p2tr').value/100,t=q*v0/10,y=v0*t-5*t*t,v=v0-10*t,ek0=.5*m*v0*v0,ek=.5*m*v*v,ep=m*10*y,hm=v0*v0/20,sc=90/ek0,gy=117-y*5;
+$('a2').innerHTML=`<path d="M10 125H140" class="ln"/><path d="M50 117V${117-hm*5}" stroke="var(--mut)" stroke-dasharray="3 3"/>${BALL(50,gy)}${AR(70,gy,70,gy-v*1.4,3,'var(--red)')}${tx(78,gy+3,'v = '+N(v)+' m/s','start','font-size:9px')}<path d="M160 35H316" stroke="var(--mut)" stroke-dasharray="4 3"/>${tx(316,29,'Ek awal','end','font-size:9px')}${R(165,125-ek*sc,45,ek*sc,'var(--blue)')}${R(225,125-ep*sc,45,ep*sc,'var(--yel)')}${tx(187,137,'Ek','middle')}${tx(247,137,'Ep','middle')}${tx(187,119-ek*sc,N(ek)+' J','middle','font-size:9px')}${tx(247,119-ep*sc,N(ep)+' J','middle','font-size:9px')}`;
+$('p2o').innerHTML=`Ek awal = ½ × ${m} × ${v0}² = ${N(ek0)} J (garis putus-putus)<br>Sekarang: v = ${N(v)} m/s, tinggi = ${N(y)} m<br>Ek = ½mv² = <b>${N(ek)} J</b>, Ep = mgh = <b>${N(ep)} J</b><br>Ek + Ep = ${N(ek+ep)} J${q==1?'<br><b>Di puncak: Ep sama dengan Ek awal.</b>':''}`};
+bind('p2',u);bind('p2b',u);bind('p2t',u);$('p2s').onclick=()=>set('p2b',2);play('p2g','p2t',100,5)}
+/* 5 */
+bind('p5',e=>{let g='';for(let i=0;i<100;i++)g+=`<rect x="${196+(i%10)*11}" y="${10+Math.floor(i/10)*10}" width="9" height="8" fill="${i<e?'var(--grn)':'var(--red)'}" opacity="${i<e?1:.45}"/>`;
+$('a5').innerHTML=`<circle cx="30" cy="28" r="14" fill="var(--yel)" stroke="var(--line)" stroke-width="2"/>`+[0,1,2].map(i=>`<path d="M46 ${24+i*8}L${96} ${60+i*5}" stroke="var(--yel)" stroke-width="3"/>`).join('')+`<polygon points="86,100 120,66 172,66 138,100" fill="var(--blue)" stroke="var(--line)" stroke-width="2"/>`+tx(30,118,'matahari','middle','font-size:10px')+tx(130,118,'panel surya','middle','font-size:10px')+tx(251,124,'100 bagian cahaya','middle','font-size:9px')+g;
+$('p5o').innerHTML=`Dari 100 bagian cahaya: <b>${e} jadi listrik</b> (hijau), ${100-e} jadi panas (merah).<br>Efisiensi = ${e} ÷ 100 × 100% = <b>${e}%</b><br>Contoh 500 kJ cahaya → listrik ${N(5*e)} kJ`});
+/* 9 */
+{const u=t=>{const a=t*PI/180,f=(1-Math.cos(a))/(1-Math.cos(40*PI/180)),ep=f*100,ek=100-ep,bx=100+90*Math.sin(a),by=15+90*Math.cos(a);
+$('a9').innerHTML=`<path d="M60 15H140" class="ln"/><path d="M100 15L${bx} ${by}" class="ln"/><path d="M40 105H150" stroke="var(--mut)" stroke-dasharray="3 3"/>${by<102?`<path d="M${bx} ${by}V105" stroke="var(--mut)" stroke-dasharray="3 3"/>${tx(bx+(bx<100?-14:5),(by+105)/2,'h','start','font-size:10px')}`:''}${BALL(bx,by,9)}${R(200,120-ep*.9,36,ep*.9,'var(--yel)')}${R(250,120-ek*.9,36,ek*.9,'var(--blue)')}${tx(218,134,'Ep','middle')}${tx(268,134,'Ek','middle')}`;
+$('p9o').innerHTML=`Ep = <b>${N(ep)}%</b> dari maksimum, Ek = <b>${N(ek)}%</b><br>${t==0?'Titik terendah: Ep terkecil, Ek terbesar.':Math.abs(t)==40?'Ujung ayunan: Ep terbesar, Ek = 0.':'Makin tinggi bandul, makin besar Ep dan makin kecil Ek.'}`};
+bind('p9',u);$('p9a').onclick=()=>set('p9',-40);$('p9b').onclick=()=>set('p9',0);$('p9c').onclick=()=>set('p9',40)}
+/* 12 */
+{const P=[[125,15,'i'],[200,20,'ii'],[300,25,'iii'],[375,30,'iv']].map(([p,h,l])=>({p,h,l,T:3500*h/p})),rank=[...P].sort((a,b)=>a.T-b.T).map(o=>o.l);let tm;
+bind('p12',t=>{
+$('a12').innerHTML='<path d="M0 78H320" class="ln"/>'+P.map((o,i)=>{const x=10+i*78,f=Math.min(1,t/o.T),d=o.h*2.2;
+return `<rect x="${x+30}" y="78" width="10" height="${d}" fill="var(--blue)" opacity=".5" stroke="var(--line)" stroke-width="2"/><rect x="${x+10}" y="${66-f*42}" width="50" height="${f*42}" fill="var(--blue)" opacity=".8"/>`+R(x+10,24,50,42,'none')+R(x+35-(8+o.p/375*12),66,2*(8+o.p/375*12),12,'var(--yel)')+tx(x+35,17,f>=1?'penuh, ke-'+(rank.indexOf(o.l)+1):Math.round(f*100)+'%','middle','font-size:9px')+tx(x+44,80+d/2+3,o.h+' m','start','font-size:9px')+tx(x+35,168,o.l,'middle')+tx(x+35,180,o.p+' W','middle','font-size:9px')}).join('');
+const done=P.filter(o=>t>=o.T).sort((a,b)=>a.T-b.T).map(o=>o.l);
+$('p12o').innerHTML=`t = m × g × h ÷ P, air 350 L = 350 kg<br>${P.map(o=>`${o.l}: 350×10×${o.h} ÷ ${o.p} = ${F(o.T)} s`).join('<br>')}<br><b>${done.length?'Sudah penuh (urut): '+done.join(', '):'Belum ada yang penuh.'}</b>${done.length==4?'<br><b>Urutan penuh: '+rank.join(' – ')+'</b>':''}`});
+$('p12s').onclick=()=>{clearInterval(tm);tm=setInterval(()=>{const n=+$('p12r').value+5;if(n>=450){set('p12',450);clearInterval(tm)}else set('p12',n)},40)};
+$('p12z').onclick=()=>{clearInterval(tm);set('p12',0)};
+$('p12r').addEventListener('pointerdown',()=>clearInterval(tm))}
+/* 13 */
+{const D=[['Matahari',.003,'±1 hari'],['Angin',.003,'±1 hari'],['Air',.08,'hari–bulan'],['Batu bara',1e6,'jutaan tahun'],['Minyak bumi',1e6,'jutaan tahun']],W=[['1 bulan',.083],['1 tahun',1],['80 tahun (umur manusia)',80],['1 juta tahun',1e6]];
+const u=k=>{W.forEach((_,i)=>$('p13'+i).classList.toggle('on',i==k));const w=W[k][1];
+$('a13').innerHTML=tx(8,12,'Simpanan habis. Tunggu '+W[k][0]+', apakah ada lagi?','start','font-size:10px')+D.map(([n,T,l],i)=>{const ok=w>=T,y=22+i*19;return tx(8,y+11,n)+R(80,y,100,14,ok?'var(--grn)':'var(--red)')+tx(130,y+11,ok?'ada lagi':'masih habis','middle','font-size:9px;fill:#1d2b4a;font-weight:600')+tx(190,y+11,'butuh '+l,'start','font-size:9px')}).join('');
+$('p13o').innerHTML=k==3?'Batu bara dan minyak bumi baru terbentuk lagi setelah jutaan tahun, jauh melewati umur manusia, jadi bukan terbarukan.':'Matahari, angin, dan air ada lagi dalam waktu singkat (terbarukan). Batu bara dan minyak bumi masih habis.'};
+W.forEach((_,i)=>$('p13'+i).onclick=()=>u(i));u(2)}
+/* 15 */
+{const u=()=>{const Ei=+$('p15r').value,re=$('p15br');re.max=Ei;if(+re.value>Ei)re.value=Ei;const Eo=+re.value;$('p15bv').textContent=Eo;const w=v=>Math.max(2,v/200*14);
+$('a15').innerHTML=`<path d="M10 124H310" class="ln" style="stroke-width:1"/>${AR(14,80,104,80,w(Ei),'var(--yel)')}<circle cx="140" cy="76" r="26" fill="var(--yel)" stroke="var(--line)" stroke-width="2"/>${R(130,102,20,12,'var(--card)')}${Eo>0?AR(140,48,140,4,w(Eo),'var(--grn)'):''}${Ei>Eo?AR(170,80,262,80,w(Ei-Eo),'var(--red)'):''}${tx(14,68,'Ei = '+Ei+' J','start','font-size:9px')}${tx(170,22,'cahaya (Eo) = '+Eo+' J','start','font-size:9px')}${tx(172,100,'panas = '+(Ei-Eo)+' J','start','font-size:9px')}${tx(14,118,'lampu','start','font-size:9px')}`;
+$('p15o').innerHTML=`η = Eo ÷ Ei × 100% = ${Eo} ÷ ${Ei} × 100% = <b>${N(Eo/Ei*100)}%</b><br>Terbuang jadi panas = ${Ei-Eo} J<br>Kalau dibalik (Ei ÷ Eo × 100%) = <span class="bad">${N(Ei/Eo*100)}%</span>${Ei>Eo?', lebih dari 100%, mustahil.':''}`};
+bind('p15',u);bind('p15b',u)}
+/* 16 */
+{const M=['Air di bendungan tinggi: punya <b>energi potensial</b>.','Air jatuh lewat pipa: energi potensial jadi <b>energi kinetik</b>.','Air yang bergerak mendorong <b>turbin</b> sampai berputar.','Turbin memutar generator, keluar <b>listrik</b> untuk menyalakan lampu.'],L=[[45,'air di atas','Ep'],[118,'air jatuh','Ep → Ek'],[165,'turbin','Ek'],[215,'generator','gerak → listrik'],[282,'lampu','listrik']];
+bind('p16',s=>{const f=(k,d)=>s==k?'var(--yel)':d;
+$('a16').innerHTML=`<path d="M0 125H320" class="ln"/>${R(8,18,84,46,f(1,'var(--blue)'))}<path d="M92 55L150 100" stroke="${s==2?'var(--yel)':'var(--mut)'}" stroke-width="9" stroke-linecap="round"/><circle cx="165" cy="105" r="14" fill="${f(3,'var(--card)')}" stroke="var(--line)" stroke-width="2"/><path d="M155 105h20M165 95v20" class="ln" style="stroke-width:1.5"/>${R(195,92,34,26,f(4,'var(--card)'))}<path d="M229 105H270" class="ln"/><circle cx="280" cy="105" r="10" fill="${f(4,'var(--card)')}" stroke="var(--line)" stroke-width="2"/>`+L.map(([x,a,b])=>tx(x,136,a,'middle','font-size:9px')+tx(x,147,b,'middle','font-size:8px')).join('');
+$('p16o').innerHTML=`Tahap ${s} dari 4: ${M[s-1]}`})}
+/* 20 */
+{const L=[['X',5.1],['Y',31.3],['Z',1.9]],u=g=>{const h=100/(2*g),y=125-h*3,m=L.find(l=>Math.abs(l[1]-h)<.3);
+$('a20').innerHTML=`<path d="M20 125H300" class="ln"/>`+L.map(([n,v])=>`<path d="M60 ${125-v*3}H300" stroke="var(--mut)" stroke-dasharray="4 3"/>`+tx(298,122-v*3,'Lokasi '+n+' ('+N(v)+' m)','end','font-size:9px')).join('')+`<path d="M100 125V${y}" stroke="var(--blue)" stroke-width="6"/>${BALL(100,y,7)}`;
+$('p20o').innerHTML=`h = v² ÷ 2g = 100 ÷ (2 × ${N(g)}) = <b>${N(h)} m</b><br>${m?`<span class="good">Pas di Lokasi ${m[0]}: g di lokasi ini sekitar ${N(g)} m/s².</span>`:'Belum pas di X, Y, atau Z. Geser g sampai bola menyentuh garis.'}`};
+bind('p20',u);$('p20a').onclick=()=>set('p20',1.6);$('p20b').onclick=()=>set('p20',9.8);$('p20c').onclick=()=>set('p20',24.8)}
+/* 21 */
+{const u=()=>{const h=+$('p21r').value,m=+$('p21br').value,q=+$('p21tr').value/100,top=125-h*5,x=14+q*150,y=top+h*5*q,ep=m*10*h*(1-q),v=Math.sqrt(20*h*q),ek=.5*m*v*v,E=m*10*h,r=6+m*.8,L=Math.hypot(150,h*5),dx=150/L,dy=h*5/L,bx=x+dy*r,by=y-dx*r;
+$('a21').innerHTML=`<path d="M14 125V${top}L164 125Z" style="fill:var(--card)" class="ln"/><path d="M10 125H310" class="ln"/>${BALL(bx,by,r)}${AR(bx,by,bx+dx*v*2.6,by+dy*v*2.6,3,'var(--red)')}${R(215,125-90*ep/E,40,90*ep/E,'var(--yel)')}${R(265,125-90*ek/E,40,90*ek/E,'var(--blue)')}${tx(235,137,'Ep','middle')}${tx(285,137,'Ek','middle')}${tx(235,119-90*ep/E,F(ep)+' J','middle','font-size:9px')}${tx(285,119-90*ek/E,F(ek)+' J','middle','font-size:9px')}${h>=3?tx(18,125-h*2.5,'h = '+h+' m','start','font-size:9px'):''}`;
+$('p21o').innerHTML=`Ep = mgh = ${m} × 10 × ${N(h*(1-q))} = ${F(ep)} J<br>Ek = ½mv² = ${F(ek)} J (v = ${N(v)} m/s)<br>Ek + Ep = ${F(ep+ek)} J, tetap${q==1?`<br><b>Di dasar: mgh = ½mv², m dicoret, v = √(2 × 10 × ${h}) = ${N(v)} m/s. Ganti massa: v tidak berubah.</b>`:''}`};
+bind('p21',u);bind('p21b',u);bind('p21t',u);$('p21s').onclick=()=>{set('p21',5);set('p21b',4)};play('p21g','p21t',100,5)}
+/* pager */
+const secs=[...document.querySelectorAll('section')],ch=[...nv.children];let cur=0;
+function go(i){cur=Math.max(0,Math.min(secs.length-1,i));secs.forEach((s,k)=>s.classList.toggle('on',k==cur));ch.forEach((a,k)=>a.classList.toggle('on',k==cur));$('pc').textContent=(cur+1)+' / '+secs.length;$('pv').disabled=cur==0;$('nx').disabled=cur==secs.length-1;history.replaceState(null,'','#s'+secs[cur].dataset.n);window.scrollTo(0,0)}
+$('pv').onclick=()=>go(cur-1);$('nx').onclick=()=>go(cur+1);ch.forEach((a,k)=>a.onclick=()=>go(k));
+go(Math.max(0,secs.findIndex(s=>'#s'+s.dataset.n==location.hash)));
+</script></body></html>
